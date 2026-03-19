@@ -1,0 +1,7 @@
+{
+    "appTheme": "system",
+    "mainPage": "http://main-page-address/",
+    "urlWhiteList": [
+        "http://whitelist-address/"
+    ]
+}

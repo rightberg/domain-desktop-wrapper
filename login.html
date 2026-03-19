@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+    <style>
+        :root {
+            --primary-color: #389e0d;
+            --primary-hover: #30880b;
+            --bg-color: #353535;
+            --card-bg: #2e2f32;
+            --text-color: #ffffff;
+            --input-bg: #1d1f21;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            transform: translate3d(0, 0, 0);
+        }
+
+        .login-container {
+            padding: 25px;
+            text-align: center;
+        }
+
+        h2 {
+            margin: 0 0 20px 0;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 4px 0;
+            background: var(--input-bg);
+            border: 1px solid #454545;
+            border-radius: 4px;
+            color: white;
+            outline: none;
+            font-size: 13px;
+            transition: none;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 11px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            background-color: #389e0d;
+        }
+
+        .error-message {
+            color: #e43838;
+            font-size: 12px;
+            margin-top: 10px;
+            display: none;
+            user-select: none;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+        <h2>Вход в аккаунт</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Логин" required autofocus>
+                <input type="password" id="password" placeholder="Пароль" required>
+            </div>
+            <button type="submit" id="submitBtn">Войти</button>
+        </form>
+        <div id="errorBox" class="error-message"></div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        const btn = document.getElementById('submitBtn');
+        const errorBox = document.getElementById('errorBox');
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            btn.innerText = 'Проверка...';
+            btn.disabled = true;
+            errorBox.style.display = 'none';
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            ipcRenderer.send('login-submit', { username, password });
+        });
+
+        ipcRenderer.on('login-error', (event, message) => {
+            btn.innerText = 'Войти';
+            btn.disabled = false;
+            errorBox.innerText = message;
+            errorBox.style.display = 'block';
+        });
+    </script>
+</body>
+
+</html>

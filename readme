@@ -1,0 +1,16 @@
+replace in package.json your app-name data
+
+"name"         "app-name",
+"productName"  "view-app-name",
+"version"      "1.0.0",
+
+replace icons in ./icons and ./build/icons
+
+1) install modules
+npm install 
+
+2) run project
+npm start
+
+3) build project
+npx electron-builder --win 
