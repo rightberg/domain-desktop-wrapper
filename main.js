@@ -1,7 +1,6 @@
 // modules
 const { getLangTemplate } = require('./localization.js');
 const { app, BrowserWindow, Menu, session, ipcMain, nativeTheme } = require('electron');
-const fs = require('fs');
 const path = require('path');
 
 let currentUsername = null;
@@ -9,22 +8,6 @@ let currentUsername = null;
 async function logoutUser() {
     app.relaunch();
     app.exit(0);
-}
-
-// config
-function getConfig() {
-    const config_path = path.join(__dirname, 'config', 'settings.json');
-    let config = JSON.parse(fs.readFileSync(config_path, 'utf-8'));
-    const user_config_path = path.join(app.getPath('userData'), 'settings.override.json');
-    if (fs.existsSync(user_config_path)) {
-        try {
-            let user_config = JSON.parse(fs.readFileSync(user_config_path, 'utf-8'));
-            config = { ...config, ...user_config };
-        } catch (err) {
-            console.error('Error parse settings.override.json: ', err);
-        }
-    }
-    return config;
 }
 
 function createWindow(config, ses) {
@@ -78,7 +61,7 @@ async function setupAuthSession() {
     const ses = session.fromPartition('persist:auth');
     // disable 400 error to use ru productName
     ses.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36");
-    
+
     authSession = ses;
 
     app.on('login', (event, webContents, request, authInfo, callback) => {
@@ -130,8 +113,18 @@ app.commandLine.appendSwitch('auth-server-whitelist', 'false');
 app.commandLine.appendSwitch('auth-negotiate-delegate-whitelist', 'false');
 app.commandLine.appendSwitch('disable-ntlm');
 
+// access in net resources
+app.commandLine.appendSwitch('no-sandbox');
+app.commandLine.appendSwitch('disable-gpu-sandbox');
+app.commandLine.appendSwitch('disable-http-cache');
+
+// use hardcode config
 app.whenReady().then(async () => {
-    const config = getConfig();
+    const config = {
+        appTheme: "system",
+        mainPage: "url-to-main-page",
+        urlWhiteList: ["http://", "https://"]
+    };
 
     const lang = 'ru';
     const template = getLangTemplate(lang, logoutUser);
