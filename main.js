@@ -109,20 +109,24 @@ async function setupAuthSession() {
     return ses;
 }
 
+// clean session (disable SSO)
 app.commandLine.appendSwitch('auth-server-whitelist', 'false');
 app.commandLine.appendSwitch('auth-negotiate-delegate-whitelist', 'false');
 app.commandLine.appendSwitch('disable-ntlm');
 
-// access in net resources
+// access on net resources
 app.commandLine.appendSwitch('no-sandbox');
 app.commandLine.appendSwitch('disable-gpu-sandbox');
-app.commandLine.appendSwitch('disable-http-cache');
+
+// optional
+// off http cache
+// app.commandLine.appendSwitch('disable-http-cache');
 
 // use hardcode config
 app.whenReady().then(async () => {
     const config = {
         appTheme: "system",
-        mainPage: "url-to-main-page",
+        mainPage: "http://domain-address/to",
         urlWhiteList: ["http://", "https://"]
     };
 

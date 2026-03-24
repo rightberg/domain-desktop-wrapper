@@ -6,6 +6,12 @@ replace in package.json your app-name data
 
 replace icons in ./icons and ./build/icons
 
+replace config in main.js
+
+appTheme - default app theme (system, dark, light)
+mainPage - 1st page to load
+urlWhiteList - list of patterns to access for external resources
+
 1) install modules
 npm install 
 
